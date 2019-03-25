@@ -9,6 +9,8 @@ config.h
 .ninja_log
 build.ninja
 rules.ninja
+build/
+install/
 
 # Compiler output
 *.o
