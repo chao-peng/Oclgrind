@@ -32,3 +32,4 @@ oclgrind-*.zip
 .DS_Store
 *.kdev4
 *.sublime-*
+.vscode/

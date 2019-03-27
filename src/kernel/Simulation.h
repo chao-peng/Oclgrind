@@ -57,6 +57,8 @@ class Simulation
     size_t m_lineNumber;
     std::istringstream m_lineBuffer;
 
+    std::vector<oclgrind::Size3> execOrder;
+
     struct DumpArg
     {
       size_t address;

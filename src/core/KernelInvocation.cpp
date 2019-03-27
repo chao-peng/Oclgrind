@@ -85,6 +85,54 @@ KernelInvocation::KernelInvocation(const Context *context, const Kernel *kernel,
   }
 }
 
+KernelInvocation::KernelInvocation(const Context *context, const Kernel *kernel,
+                                   unsigned int workDim,
+                                   Size3 globalOffset,
+                                   Size3 globalSize,
+                                   Size3 localSize,
+                                   vector<Size3> execOrder)
+  : m_context(context), m_kernel(kernel)
+{
+  m_workDim      = workDim;
+  m_globalOffset = globalOffset;
+  m_globalSize   = globalSize;
+  m_localSize    = localSize;
+
+  m_numGroups.x = m_globalSize.x/m_localSize.x;
+  m_numGroups.y = m_globalSize.y/m_localSize.y;
+  m_numGroups.z = m_globalSize.z/m_localSize.z;
+  if (!m_kernel->getProgram()->requiresUniformWorkGroups())
+  {
+    m_numGroups.x += m_globalSize.x % m_localSize.x ? 1 : 0;
+    m_numGroups.y += m_globalSize.y % m_localSize.y ? 1 : 0;
+    m_numGroups.z += m_globalSize.z % m_localSize.z ? 1 : 0;
+  }
+
+  // Check for user overriding number of threads
+  m_numWorkers = getEnvInt("OCLGRIND_NUM_THREADS",
+                           thread::hardware_concurrency(), false);
+  if (!m_numWorkers || !m_context->isThreadSafe())
+    m_numWorkers = 1;
+
+  // Check for quick-mode environment variable
+  if (checkEnv("OCLGRIND_QUICK"))
+  {
+    // Only run first and last work-groups in quick-mode
+    Size3 firstGroup(0, 0, 0);
+    Size3 lastGroup(m_numGroups.x-1, m_numGroups.y-1, m_numGroups.z-1);
+    m_workGroups.push_back(firstGroup);
+    if (lastGroup != firstGroup)
+      m_workGroups.push_back(lastGroup);
+  }
+  else
+  {
+    while (!execOrder.empty()) {
+      m_workGroups.push_back(execOrder.back());
+      execOrder.pop_back();
+    }
+  }
+}
+
 KernelInvocation::~KernelInvocation()
 {
   // Destroy any remaining work-groups
@@ -151,6 +199,28 @@ void KernelInvocation::run(const Context *context, Kernel *kernel,
                                               globalOffset,
                                               globalSize,
                                               localSize);
+
+  // Run kernel
+  context->notifyKernelBegin(ki);
+  ki->run();
+  context->notifyKernelEnd(ki);
+
+  delete ki;
+}
+
+void KernelInvocation::run(const Context *context, Kernel *kernel,
+                           unsigned int workDim,
+                           Size3 globalOffset,
+                           Size3 globalSize,
+                           Size3 localSize,
+                           vector<Size3> execOrder)
+{
+  // Create kernel invocation
+  KernelInvocation *ki = new KernelInvocation(context, kernel, workDim,
+                                              globalOffset,
+                                              globalSize,
+                                              localSize,
+                                              execOrder);
 
   // Run kernel
   context->notifyKernelBegin(ki);

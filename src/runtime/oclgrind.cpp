@@ -264,6 +264,10 @@ static bool parseArguments(int argc, char *argv[])
     {
       setEnvironment("OCLGRIND_INTERACTIVE", "1");
     }
+    else if (!strcmp(argv[i], "-s") || !strcmp(argv[i], "--scheduler-mem"))
+    {
+      setEnvironment("OCLGRIND_SCHEDULER", "1");
+    }
     else if (!strcmp(argv[i], "--local-mem-size"))
     {
       if (++i >= argc)

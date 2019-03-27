@@ -57,6 +57,10 @@ static bool parseArguments(int argc, char *argv[])
       }
       setEnvironment("OCLGRIND_BUILD_OPTIONS", argv[i]);
     }
+    else if (!strcmp(argv[i], "-s") || !strcmp(argv[i], "--scheduler-mem"))
+    {
+      setEnvironment("OCLGRIND_SCHEDULER", "1");
+    }
     else if (!strcmp(argv[i], "--compute-units"))
     {
       if (++i >= argc)

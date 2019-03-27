@@ -2,5 +2,6 @@ barrier_divergence.cl
 barrier_divergence
 32 1 1
 4 1 1
+schedule.txt
 
 <size=128 fill=0 dump>

@@ -23,6 +23,12 @@ namespace oclgrind
                     Size3 globalOffset,
                     Size3 globalSize,
                     Size3 localSize);
+    static void run(const Context *context, Kernel *kernel,
+                    unsigned int workDim,
+                    Size3 globalOffset,
+                    Size3 globalSize,
+                    Size3 localSize,
+                    std::vector<Size3> execOrder);
 
     const Context* getContext() const;
     const WorkGroup* getCurrentWorkGroup() const;
@@ -43,6 +49,12 @@ namespace oclgrind
                      Size3 globalOffset,
                      Size3 globalSize,
                      Size3 localSize);
+    KernelInvocation(const Context *context, const Kernel *kernel,
+                     unsigned int workDim,
+                     Size3 globalOffset,
+                     Size3 globalSize,
+                     Size3 localSize,
+                     std::vector<Size3> execOrder);
     virtual ~KernelInvocation();
     void run();
 

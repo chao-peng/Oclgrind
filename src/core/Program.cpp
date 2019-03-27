@@ -305,7 +305,7 @@ bool Program::build(const char *options, list<Header> headers)
   m_requiresUniformWorkGroups = false;
 
   // Disable optimizations by default if in interactive mode
-  if (checkEnv("OCLGRIND_INTERACTIVE"))
+  if (checkEnv("OCLGRIND_INTERACTIVE") || checkEnv("OCLGRIND_SCHEDULER"))
     optimize = false;
 
   // Add OpenCL build options
@@ -521,7 +521,7 @@ bool Program::build(const char *options, list<Header> headers)
     m_module = action.takeModule();
 
     // Strip debug intrinsics if not in interactive mode
-    if (!checkEnv("OCLGRIND_INTERACTIVE"))
+    if (!checkEnv("OCLGRIND_SCHEDULER") && !checkEnv("OCLGRIND_INTERACTIVE"))
     {
       stripDebugIntrinsics();
     }

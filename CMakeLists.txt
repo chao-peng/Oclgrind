@@ -216,6 +216,8 @@ add_library(oclgrind ${CORE_LIB_TYPE}
   src/core/WorkItem.cpp
   src/core/WorkItemBuiltins.cpp
   src/core/WorkGroup.cpp
+  src/plugins/GroupScheduler.h
+  src/plugins/GroupScheduler.cpp
   src/plugins/InstructionCounter.h
   src/plugins/InstructionCounter.cpp
   src/plugins/InteractiveDebugger.h

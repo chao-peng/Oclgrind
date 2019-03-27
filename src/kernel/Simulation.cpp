@@ -148,6 +148,28 @@ bool Simulation::load(const char *filename)
     get(m_wgsize.x);
     get(m_wgsize.y);
     get(m_wgsize.z);
+    string schedulerFileName;
+    if (checkEnv("OCLGRIND_SCHEDULER")) {
+      PARSING("scheduler file");
+      get(schedulerFileName);
+      ifstream readScheduleStream;
+      readScheduleStream.open(schedulerFileName.c_str(), ios_base::in);
+      if (!readScheduleStream.good())
+      {
+        cerr << "Unable to open " << schedulerFileName << endl;
+        return false;
+      }
+      string line;
+      while(getline(readScheduleStream, line)) {
+        if (!line.empty()) {
+          int x, y, z;
+          std::istringstream iss(line);
+          iss >> x >> y >> z;
+          Size3 group(x, y, z);
+          execOrder.push_back(group);
+        }
+      }
+    }
 
     // Open program file
     ifstream progFile;
@@ -727,7 +749,11 @@ void Simulation::run(bool dumpGlobalMemory)
   assert(m_kernel->allArgumentsSet());
 
   Size3 offset(0, 0, 0);
-  KernelInvocation::run(m_context, m_kernel, 3, offset, m_ndrange, m_wgsize);
+  if (checkEnv("OCLGRIND_SCHEDULER")) {
+    KernelInvocation::run(m_context, m_kernel, 3, offset, m_ndrange, m_wgsize, execOrder);
+  } else {
+    KernelInvocation::run(m_context, m_kernel, 3, offset, m_ndrange, m_wgsize);
+  }
 
   // Dump individual arguments
   cout << dec;

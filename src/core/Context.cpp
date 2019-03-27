@@ -30,6 +30,7 @@
 #include "WorkGroup.h"
 #include "WorkItem.h"
 
+#include "plugins/GroupScheduler.h"
 #include "plugins/InstructionCounter.h"
 #include "plugins/InteractiveDebugger.h"
 #include "plugins/Logger.h"
@@ -97,6 +98,8 @@ void Context::loadPlugins()
   if (checkEnv("OCLGRIND_INTERACTIVE"))
     m_plugins.push_back(make_pair(new InteractiveDebugger(this), true));
 
+  if (checkEnv("OCLGRIND_SCHEDULER"))
+    m_plugins.push_back(make_pair(new GroupScheduler(this), true));
 
   // Load dynamic plugins
   const char *dynamicPlugins = getenv("OCLGRIND_PLUGINS");
