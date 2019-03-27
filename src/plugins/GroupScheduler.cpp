@@ -91,14 +91,23 @@ void GroupScheduler::workGroupBegin(
   const WorkGroup *workGroup)
 {
   auto group_id = workGroup->getGroupID();
-  cout << "[debug] Starting work group " << group_id << endl;
+  cout << "[Group]  Starting work group " << group_id << endl;
 }
 
 void GroupScheduler::workGroupComplete(
   const WorkGroup *workGroup)
 {
   auto group_id = workGroup->getGroupID();
-  cout << "[debug] Work group " << group_id << " finishes execution" << endl;
+  cout << "[Group]  Work group " << group_id << " finishes execution" << endl;
+}
+
+void GroupScheduler::workItemBegin(const WorkItem *workItem) {
+  auto item_id = workItem->getGlobalID();
+  cout << "[Thread] Starting thread " << item_id << endl;
+}
+void GroupScheduler::workItemComplete(const WorkItem *workItem) {
+  auto item_id = workItem->getGlobalID();
+  cout << "[Thread] Thread " << item_id << " finishes execution" << endl;
 }
 
 bool GroupScheduler::isThreadSafe() const

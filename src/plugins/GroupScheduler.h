@@ -26,6 +26,8 @@ namespace oclgrind
     virtual void log(MessageType type, const char *message) override;
     virtual void workGroupBegin(const WorkGroup *workGroup) override;
     virtual void workGroupComplete(const WorkGroup *workGroup) override;
+    virtual void workItemBegin(const WorkItem *workItem) override;
+    virtual void workItemComplete(const WorkItem *workItem) override;
     virtual bool isThreadSafe() const override;
   private:
 
