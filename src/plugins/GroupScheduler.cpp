@@ -90,24 +90,15 @@ GroupScheduler::GroupScheduler(const Context *context)
 void GroupScheduler::workGroupBegin(
   const WorkGroup *workGroup)
 {
-  int group_id_0 = workGroup->getGroupID().x;
-  cout << "[debug] " << group_id_0 << endl;
-  if (current_enababled_group_id != group_id_0) {
-    
-  }
-  /*
-  //info(vector<string>());
-  while (current_enababled_group_id != group_id_0) {
-    continue;
-  }
-  */
+  auto group_id = workGroup->getGroupID();
+  cout << "[debug] Starting work group " << group_id << endl;
 }
 
 void GroupScheduler::workGroupComplete(
   const WorkGroup *workGroup)
 {
-  //current_enababled_group_id = group_order.back();
-  //group_order.pop_back();
+  auto group_id = workGroup->getGroupID();
+  cout << "[debug] Work group " << group_id << " finishes execution" << endl;
 }
 
 bool GroupScheduler::isThreadSafe() const
